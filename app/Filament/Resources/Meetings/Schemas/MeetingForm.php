@@ -50,6 +50,7 @@ class MeetingForm
                        Select::make('employees')
                             ->multiple()
                             ->label('Attendees')
+                            ->placeholder('Select attendees by name, email, or employee code')
                             ->relationship('employees', 'name')
                             ->searchable()
                             ->preload()

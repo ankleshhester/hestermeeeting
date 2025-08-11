@@ -18,6 +18,15 @@ class MeetingsTable
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(function ($query) {
+                $user = Auth::user();
+
+                // If user is NOT super_admin, hide completed meetings
+                if ($user->hasRole('User')) {
+                    $query->where('status', '!=', 'completed');
+                }
+            })
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('conferenceRoom.name')
                     ->label('Conference Room')
