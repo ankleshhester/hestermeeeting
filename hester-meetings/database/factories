@@ -1,0 +1,25 @@
+// filepath: hester-meetings/database/factories/EmployeeFactory.php
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Employee;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class EmployeeFactory extends Factory
+{
+    protected $model = Employee::class;
+
+    public function definition()
+    {
+        return [
+            'employee_code' => $this->faker->unique()->numerify('EMP###'),
+            'name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
+            'mobile' => $this->faker->phoneNumber,
+            'extension' => $this->faker->numberBetween(100, 999),
+            'monthly_cost' => $this->faker->randomFloat(2, 2000, 10000),
+            'hourly_cost' => $this->faker->randomFloat(2, 20, 100),
+        ];
+    }
+}
