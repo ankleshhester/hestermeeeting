@@ -69,16 +69,6 @@ class User extends Authenticatable implements FilamentUser // Implement the Fila
     public function canAccessPanel(Panel $panel): bool
     {
         // Example: Allow only users with the 'admin' role to access the panel.
-<<<<<<< HEAD
         return true; // allow all users to log in
-=======
-        return $this->hasRole('super_admin');
-
-        // You can customize this logic based on your authorization needs.
-        // For instance, you could check for specific email domains, teams, or other attributes.
-        // If you don't have any specific rules and want to allow all authenticated users,
-        // you can simply return true; (less secure in production without other authorization mechanisms).
-        // return true;
->>>>>>> ffdc249d2b33dd36bff4e1f0ced7e4f664f9d68a
     }
 }
