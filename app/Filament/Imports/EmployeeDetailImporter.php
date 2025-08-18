@@ -18,19 +18,25 @@ class EmployeeDetailImporter extends Importer
             ImportColumn::make('employee_code')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
+
             ImportColumn::make('name')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
+
             ImportColumn::make('email')
                 ->requiredMapping()
                 ->rules(['required', 'email', 'max:255']),
+
             ImportColumn::make('mobile')
                 ->rules(['max:255']),
+
             ImportColumn::make('extension')
                 ->rules(['max:255']),
+
             ImportColumn::make('monthly_cost')
                 ->numeric()
-                ->rules(['integer']),
+                ->rules(['nullable', 'integer']),
+
             ImportColumn::make('hourly_cost')
                 ->requiredMapping()
                 ->numeric()
@@ -38,6 +44,9 @@ class EmployeeDetailImporter extends Importer
         ];
     }
 
+    /**
+     * Ensure unique employees by employee_code
+     */
     public function resolveRecord(): EmployeeDetail
     {
         return EmployeeDetail::firstOrNew([
@@ -45,12 +54,34 @@ class EmployeeDetailImporter extends Importer
         ]);
     }
 
+    /**
+     * Map row data into the model before saving
+     */
+    public function mutateRecordDataBeforeSave(array $data): array
+    {
+        return [
+            'employee_code' => $data['employee_code'],
+            'name'          => $data['name'],
+            'email'         => $data['email'],
+            'mobile'        => $data['mobile'] ?? null,
+            'extension'     => $data['extension'] ?? null,
+            'monthly_cost'  => $data['monthly_cost'] ?? null,
+            'hourly_cost'   => $data['hourly_cost'],
+        ];
+    }
+
+    /**
+     * Customize completion notification
+     */
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your employee detail import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $body = 'Your employee detail import has completed and '
+            . Number::format($import->successful_rows)
+            . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
+            $body .= ' ' . Number::format($failedRowsCount)
+                . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
         }
 
         return $body;
