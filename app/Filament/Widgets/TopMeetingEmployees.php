@@ -22,9 +22,9 @@ class TopMeetingEmployees extends BaseWidget
         return EmployeeDetail::query()
             ->select('employee_details.id', 'employee_details.name', 'employee_details.hourly_cost')
         ->selectRaw('
-            SUM(TIMESTAMPDIFF(SECOND, emp.created_at, COALESCE(emp.end_time, NOW()))) AS total_duration_seconds,
-            AVG(TIMESTAMPDIFF(SECOND, emp.created_at, COALESCE(emp.end_time, NOW()))) AS avg_duration_seconds,
-            (SUM(TIMESTAMPDIFF(SECOND, emp.created_at, COALESCE(emp.end_time, NOW()))) / 3600) * employee_details.hourly_cost AS total_cost
+            SUM(TIMESTAMPDIFF(SECOND, emp.created_at, COALESCE(emp.end_time, CONVERT_TZ(NOW(), "+00:00", "+05:30")))) AS total_duration_seconds,
+            AVG(TIMESTAMPDIFF(SECOND, emp.created_at, COALESCE(emp.end_time, CONVERT_TZ(NOW(), "+00:00", "+05:30")))) AS avg_duration_seconds,
+            (SUM(TIMESTAMPDIFF(SECOND, emp.created_at, COALESCE(emp.end_time, CONVERT_TZ(NOW(), "+00:00", "+05:30")))) / 3600) * employee_details.hourly_cost AS total_cost
         ')
         ->join('employee_meeting_pivots as emp', 'employee_details.id', '=', 'emp.employee_detail_id')
         ->when($startDate, fn (Builder $q) => $q->whereDate('emp.created_at', '>=', $startDate))
