@@ -7,12 +7,14 @@ use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use App\Filament\Exports\MeetingEmployeesExport;
 
 class TopMeetingEmployees extends BaseWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Top Meeting Employees';
+    protected static ?string $heading = 'Meeting Employees';
 
     protected function getTableQuery(): Builder
     {
@@ -59,6 +61,16 @@ class TopMeetingEmployees extends BaseWidget
                 ->sortable(query: fn (Builder $query, string $direction) =>
                     $query->orderByRaw('total_cost ' . $direction)
                 ),
+        ];
+    }
+
+    protected function getTableHeaderActions(): array
+    {
+        return [
+            ExportAction::make()
+                ->exports([
+                    MeetingEmployeesExport::make('Export Rooms'),
+                ]),
         ];
     }
 

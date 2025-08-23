@@ -7,12 +7,14 @@ use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use App\Filament\Exports\ConferenceRoomsExport;
 
 class TopConferenceRooms extends BaseWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Top Conference Rooms (by Duration)';
+    protected static ?string $heading = 'Conference Rooms (by Duration)';
 
     protected function getTableQuery(): Builder
     {
@@ -56,6 +58,16 @@ class TopConferenceRooms extends BaseWidget
                 ->sortable(query: fn (Builder $query, string $direction) =>
                     $query->orderByRaw('avg_duration_seconds ' . $direction)
                 ),
+        ];
+    }
+
+    protected function getTableHeaderActions(): array
+    {
+        return [
+            ExportAction::make()
+                ->exports([
+                    ConferenceRoomsExport::make('Export Rooms'),
+                ]),
         ];
     }
 
