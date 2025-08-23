@@ -21,7 +21,8 @@ class MeetingResource extends Resource
 {
     protected static ?string $model = Meeting::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Calendar;
+
 
     public static function form(Schema $schema): Schema
     {
