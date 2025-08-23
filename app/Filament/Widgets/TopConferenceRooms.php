@@ -15,6 +15,8 @@ class TopConferenceRooms extends BaseWidget
     use InteractsWithPageFilters;
 
     protected static ?string $heading = 'Conference Rooms (by Duration)';
+    // Make the widget span the full width of the dashboard
+    protected int | string | array $columnSpan = 'full';
 
     protected function getTableQuery(): Builder
     {
@@ -39,7 +41,8 @@ class TopConferenceRooms extends BaseWidget
         return [
             Tables\Columns\TextColumn::make('name')
                 ->label('Conference Room')
-                ->searchable(),
+                ->searchable()
+                ->columnSpanFull(),
 
             Tables\Columns\TextColumn::make('total_meetings')
                 ->label('Total Meetings')

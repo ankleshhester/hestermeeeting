@@ -16,6 +16,9 @@ class TopMeetingEmployees extends BaseWidget
 
     protected static ?string $heading = 'Meeting Employees';
 
+    // Make the widget span the full width of the dashboard
+    protected int | string | array $columnSpan = 'full';
+
     protected function getTableQuery(): Builder
     {
         $startDate = $this->pageFilters['start_date'] ?? null;
