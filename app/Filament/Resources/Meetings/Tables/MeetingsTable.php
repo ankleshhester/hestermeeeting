@@ -28,8 +28,8 @@ class MeetingsTable
 
                 // If normal user -> only show their meetings & hide completed
                 if ($user->hasRole('User')) {
-                    return $query->where('created_by', $user->id)
-                                ->where('status', '!=', 'completed');
+                    return $query->where('created_by', $user->id);
+                                // ->where('status', '!=', 'completed');
                 }
 
                 return $query;
@@ -69,7 +69,11 @@ class MeetingsTable
 
                 TextColumn::make('cost')
                     ->label('Total Cost')
-                    ->money('INR'),
+                    ->money('INR')
+                    ->visible(function () {
+                        $user = Auth::user();
+                        return $user && $user->hasRole('super_admin');
+                    }),
 
                 Tables\Columns\TextColumn::make('employees.name')
                     ->label('Attendees')
@@ -77,9 +81,24 @@ class MeetingsTable
                     ->searchable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('conference_room_id')
-                    ->relationship('conferenceRoom', 'name')
-                    ->label('Conference Room'),
+                Tables\Filters\Filter::make('date_range')
+                    ->form([
+                        \Filament\Forms\Components\DatePicker::make('from')
+                            ->label('From Date'),
+                        \Filament\Forms\Components\DatePicker::make('until')
+                            ->label('To Date'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when(
+                                $data['from'],
+                                fn ($query, $date) => $query->whereDate('start_time', '>=', $date),
+                            )
+                            ->when(
+                                $data['until'],
+                                fn ($query, $date) => $query->whereDate('end_time', '<=', $date),
+                            );
+                    }),
             ])
             ->recordActions([
                 EditAction::make()
