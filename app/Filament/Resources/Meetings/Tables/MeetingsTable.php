@@ -21,10 +21,18 @@ class MeetingsTable
             ->modifyQueryUsing(function ($query) {
                 $user = Auth::user();
 
-                // If user is NOT super_admin, hide completed meetings
-                if ($user->hasRole('User')) {
-                    $query->where('status', '!=', 'completed');
+                // If super_admin -> show all meetings
+                if ($user->hasRole('super_admin')) {
+                    return $query;
                 }
+
+                // If normal user -> only show their meetings & hide completed
+                if ($user->hasRole('User')) {
+                    return $query->where('created_by', $user->id)
+                                ->where('status', '!=', 'completed');
+                }
+
+                return $query;
             })
             ->defaultSort('created_at', 'desc')
             ->columns([
