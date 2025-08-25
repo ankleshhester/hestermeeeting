@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->homeUrl(fn () => route('filament.admin.resources.meetings.index'))
+            ->homeUrl('/admin/meetings')
             ->colors([
                 'primary' => Color::Amber,
             ])
