@@ -39,11 +39,19 @@ class MeetingsTable
                 Tables\Columns\TextColumn::make('conferenceRoom.name')
                     ->label('Conference Room')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->visible(function () {
+                        $user = Auth::user();
+                        return $user && $user->hasRole('super_admin');
+                    }),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Title')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('start_time')
                     ->dateTime()
                     ->sortable(),
@@ -69,11 +77,11 @@ class MeetingsTable
 
                 TextColumn::make('cost')
                     ->label('Total Cost')
-                    ->money('INR')
-                    ->visible(function () {
-                        $user = Auth::user();
-                        return $user && $user->hasRole('super_admin');
-                    }),
+                    ->money('INR'),
+                    // ->visible(function () {
+                    //     $user = Auth::user();
+                    //     return $user && $user->hasRole('super_admin');
+                    // }),
 
                 Tables\Columns\TextColumn::make('employees.name')
                     ->label('Attendees')
