@@ -78,18 +78,7 @@ class EmployeesRelationManager extends RelationManager
                     }),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('is_organizer')
-                    ->options([
-                        true => 'Yes',
-                        false => 'No',
-                    ])
-                    ->label('Organizer'),
-                Tables\Filters\SelectFilter::make('is_attending')
-                    ->options([
-                        true => 'Yes',
-                        false => 'No',
-                    ])
-                    ->label('Attending'),
-                    ]);
+                        // Define any table filters here
+            ]);
     }
 }

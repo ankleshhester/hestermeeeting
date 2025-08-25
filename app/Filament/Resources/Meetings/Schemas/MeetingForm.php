@@ -29,6 +29,7 @@ class MeetingForm
                                 DateTimePicker::make('start_time')
                                     ->required()
                                     ->default(now())
+                                    ->readOnly()
                                     ->label('Start Time'),
                                 TextInput::make('title')
                                     ->maxLength(255)

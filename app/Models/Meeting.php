@@ -35,6 +35,13 @@ class Meeting extends Model
         return $this->belongsTo(ConferenceRoom::class);
     }
 
+    protected static function booted()
+    {
+        static::creating(function ($meeting) {
+            $meeting->start_time = now(); // same as created_at
+        });
+    }
+
     /**
      * Get the employees associated with the meeting.
      */
