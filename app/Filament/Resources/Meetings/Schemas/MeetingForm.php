@@ -40,12 +40,12 @@ class MeetingForm
                                     ->maxLength(500)
                                     ->label('Notes'),
 
-                                Forms\Components\Select::make('conference_room_id')
-                                    ->relationship('conferenceRoom', 'name')
-                                    ->searchable()
-                                    ->preload()
+                                Hidden::make('conference_room_id')
                                     ->required()
-                                    ->visible(fn () => auth()->user()?->hasRole('super_admin')),
+                                    ->default(fn () => Auth::user()?->conferenceRooms()->select('conference_rooms.id')->value('conference_rooms.id')) // Gets the first related room ID
+                                    ->label('Conference Room'),
+
+
                             ]),
 
                        Select::make('employees')
