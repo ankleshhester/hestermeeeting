@@ -43,6 +43,7 @@ class MeetingForm
                                 Forms\Components\Select::make('conference_room_id')
                                     ->relationship('conferenceRoom', 'name')
                                     ->searchable()
+                                    ->preload()
                                     ->required()
                                     ->visible(fn () => auth()->user()?->hasRole('super_admin')),
                             ]),
