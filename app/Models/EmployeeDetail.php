@@ -39,9 +39,4 @@ class EmployeeDetail extends Model
         return ucfirst($value);
     }
 
-    // public function conferenceRooms()
-    // {
-    //     return $this->hasMany(ConferenceRoom::class);
-    // }
-    // Define any relationships, accessors, or mutators here
 }
