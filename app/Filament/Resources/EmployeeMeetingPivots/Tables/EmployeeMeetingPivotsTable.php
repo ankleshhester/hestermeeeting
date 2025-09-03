@@ -8,6 +8,10 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
+use Filament\Tables\Filters\SelectFilter;
+use App\Filament\Exports\EmployeeMeetingPivotsExporter;
+use Filament\Actions\ExportAction;
 
 class EmployeeMeetingPivotsTable
 {
@@ -15,20 +19,17 @@ class EmployeeMeetingPivotsTable
     {
         return $table
             ->columns([
-                TextColumn::make('employee_detail_id')
+                TextColumn::make('employeeDetail.name')
+                    ->numeric()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('meeting.title')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('meeting_id')
-                    ->numeric()
-                    ->sortable(),
-                IconColumn::make('is_organizer')
-                    ->boolean(),
-                IconColumn::make('is_attending')
-                    ->boolean(),
                 TextColumn::make('created_at')
+                    ->label('Started At')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -36,17 +37,51 @@ class EmployeeMeetingPivotsTable
                 TextColumn::make('end_time')
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('duration')
+                    ->label('Duration')
+                    ->getStateUsing(function ($record) {
+                        if (!$record->created_at || !$record->end_time) {
+                            return '-';
+                        }
+
+                        $start = Carbon::parse($record->created_at);
+                        $end = Carbon::parse($record->end_time);
+
+                        $diffInMinutes = $start->diffInMinutes($end);
+                        $hours = floor($diffInMinutes / 60);
+                        $minutes = $diffInMinutes % 60;
+
+                        $hourLabel = $hours === 1 ? 'hr' : 'hrs';
+                        $minuteLabel = $minutes === 1 ? 'min' : 'mins';
+
+                        return "{$hours} {$hourLabel} & {$minutes} {$minuteLabel}";
+                    })
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                // EditAction::make(),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                ExportAction::make()
+                    ->label('Export Excel')
+                    ->exporter  (EmployeeMeetingPivotsExporter::class)
             ]);
+
+    if (! function_exists('calculateDuration')) {
+        function calculateDuration($start, $end)
+        {
+            $diffInMinutes = Carbon::parse($start)->diffInMinutes(Carbon::parse($end));
+            $hours = floor($diffInMinutes / 60);
+            $minutes = $diffInMinutes % 60;
+
+            return $hours > 0
+                ? "{$hours} hrs {$minutes} mins"
+                : "{$minutes} mins";
+        }
     }
+    }
+
 }

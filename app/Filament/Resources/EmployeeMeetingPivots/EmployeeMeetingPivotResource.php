@@ -16,14 +16,11 @@ use Filament\Tables\Table;
 
 class EmployeeMeetingPivotResource extends Resource
 {
-    public static function shouldRegisterNavigation(): bool
-    {
-        return false; // Disable navigation for this resource
-    }
-
     protected static ?string $model = EmployeeMeetingPivot::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $recordTitleAttribute = 'EmployeeMeetingReport';
 
     public static function form(Schema $schema): Schema
     {
